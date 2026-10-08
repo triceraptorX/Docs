@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notes</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    // Applique le thème avant le rendu pour éviter un flash
+    try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <aside id="sidebar">
+    <div class="sb-header">
+      <div class="sb-workspace"><span class="sb-logo">📝</span> Mes notes</div>
+      <button class="icon-btn" id="sb-close" title="Masquer la barre latérale (Ctrl+\)">«</button>
+    </div>
+    <button class="sb-item" id="sb-search"><span class="sb-ico">🔍</span> Rechercher <kbd>Ctrl K</kbd></button>
+    <button class="sb-item" id="sb-new"><span class="sb-ico">＋</span> Nouvelle page</button>
+    <div class="sb-section">Pages</div>
+    <nav id="tree"></nav>
+    <div class="sb-footer">
+      <button class="sb-item" id="sb-trash"><span class="sb-ico">🗑️</span> Corbeille</button>
+      <button class="sb-item" id="sb-theme"><span class="sb-ico">🌓</span> Thème clair / sombre</button>
+    </div>
+  </aside>
+  <div id="sb-backdrop"></div>
+
+  <main id="main">
+    <header id="topbar">
+      <button class="icon-btn" id="sb-open" title="Afficher la barre latérale (Ctrl+\)">☰</button>
+      <nav id="breadcrumbs"></nav>
+      <span id="save-status"></span>
+      <button class="icon-btn" id="page-menu-btn" title="Options de la page">⋯</button>
+    </header>
+    <div id="scroller">
+      <article id="page" class="page"></article>
+    </div>
+  </main>
+
+  <div id="slash-menu" class="popover slash" hidden></div>
+  <div id="format-bar" hidden></div>
+  <div id="toasts"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "notes-locales",
+  "version": "1.0.0",
+  "description": "Un équivalent de Notion, auto-hébergé en local, sans dépendance.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
