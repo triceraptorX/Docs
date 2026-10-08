@@ -1,0 +1,26 @@
+[Unit]
+Description=Notes locales
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__USER__
+WorkingDirectory=__APP_DIR__
+Environment=PORT=3000
+Environment=HOST=127.0.0.1
+Environment=TRUST_PROXY=1
+Environment=COOKIE_SECURE=1
+ExecStart=__NODE__ server.js
+Restart=on-failure
+RestartSec=5
+
+# Durcissement : le service ne peut écrire que dans data/
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=__APP_DIR__/data
+
+[Install]
+WantedBy=multi-user.target

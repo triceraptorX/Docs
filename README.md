@@ -42,6 +42,24 @@ caddy reverse-proxy --from notes.mondomaine.fr --to localhost:3000
 
 Pour un accès depuis l'extérieur sans nom de domaine ni ouverture de port, un tunnel comme [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) ou [Tailscale](https://tailscale.com) fonctionne aussi (garder `TRUST_PROXY=1`).
 
+### Sur un Raspberry Pi
+
+```bash
+git clone -b claude/awesome-cannon-y0ck0q https://github.com/triceraptorX/Docs.git
+cd Docs
+bash deploy/install-pi.sh      # Node.js + compte + service qui démarre au boot
+```
+
+Puis, pour l'accès depuis Internet en HTTPS sans nom de domaine ni ouverture de port, [Tailscale Funnel](https://tailscale.com/kb/1223/funnel) :
+
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+sudo tailscale funnel --bg 3000
+```
+
+Commandes utiles : `sudo systemctl restart notes`, `journalctl -u notes -f` (journaux), `git pull && sudo systemctl restart notes` (mise à jour).
+
 ### Sécurité intégrée
 - Mot de passe haché avec **scrypt** (jamais stocké en clair), fichiers secrets en droits `600`.
 - Session par cookie `HttpOnly`, `SameSite=Lax`, `Secure` en HTTPS ; seule l'empreinte du jeton est stockée côté serveur.
@@ -95,6 +113,7 @@ server.js          Serveur HTTP + API REST (/api/pages) + stockage JSON
 public/index.html  Squelette de l'interface
 public/app.js      Éditeur, barre latérale, bases de données
 public/login.*     Page de connexion
+deploy/            Script d'installation et service systemd (Raspberry Pi / Debian)
 public/style.css   Styles
 data/              Tes données et ton compte (créé au premier lancement, ignoré par git)
 ```

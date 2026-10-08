@@ -122,7 +122,8 @@ function createSession(req, res) {
 // Anti brute-force : 5 essais ratés → blocage croissant (1 min, 2, 4… jusqu'à 1 h)
 const attempts = new Map();
 function clientIp(req) {
-  if (TRUST_PROXY && req.headers['x-forwarded-for']) return String(req.headers['x-forwarded-for']).split(',')[0].trim();
+  // Dernière adresse = celle ajoutée par notre proxy ; les précédentes peuvent être falsifiées par le client
+  if (TRUST_PROXY && req.headers['x-forwarded-for']) return String(req.headers['x-forwarded-for']).split(',').pop().trim();
   return req.socket.remoteAddress;
 }
 function lockedFor(ip) {
