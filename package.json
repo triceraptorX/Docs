@@ -4,7 +4,8 @@
   "description": "Un équivalent de Notion, auto-hébergé en local, sans dépendance.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "set-password": "node server.js --set-password"
   },
   "engines": {
     "node": ">=18"

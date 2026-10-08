@@ -196,6 +196,10 @@ const api = {
       headers: body ? { 'Content-Type': 'application/json' } : {},
       body: body ? JSON.stringify(body) : undefined,
     });
+    if (r.status === 401) {
+      location.href = `/login${location.hash}`;
+      throw new Error('Session expirée');
+    }
     if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || r.statusText);
     return r.json();
   },
@@ -2029,6 +2033,11 @@ function setupChrome() {
     document.documentElement.dataset.theme = dark ? 'light' : 'dark';
     try { localStorage.setItem('theme', document.documentElement.dataset.theme); } catch { /* ignore */ }
   };
+  $('#sb-account').onclick = (e) => openMenu(e.currentTarget, [
+    { header: state.me ? `Connecté : ${state.me.username}` : 'Compte' },
+    state.me?.canChangePassword && { label: 'Changer le mot de passe', icon: '🔑', onClick: openPasswordDialog },
+    { label: 'Se déconnecter', icon: '⎋', onClick: logout },
+  ]);
   $('#page-menu-btn').onclick = (e) => state.currentId && openPageMenu(state.currentId, e.currentTarget);
 
   document.addEventListener('keydown', (e) => {
@@ -2050,12 +2059,45 @@ function setupChrome() {
   window.addEventListener('hashchange', route);
 }
 
+async function logout() {
+  await flushSaves();
+  await fetch('/api/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+  location.href = '/login';
+}
+
+function openPasswordDialog() {
+  const err = h('p', { class: 'login-error', hidden: true });
+  const field = (label, name, ac) => h('label', {}, label, h('input', { name, type: 'password', autocomplete: ac, required: true, minlength: name === 'current' ? null : '8' }));
+  const form = h('form', { class: 'pw-form' },
+    field('Mot de passe actuel', 'current', 'current-password'),
+    field('Nouveau mot de passe (8 caractères min.)', 'next', 'new-password'),
+    field('Confirmer le nouveau mot de passe', 'confirm', 'new-password'),
+    err,
+    h('div', { class: 'actions' },
+      h('button', { type: 'button', class: 'btn', onclick: () => close() }, 'Annuler'),
+      h('button', { type: 'submit', class: 'btn primary' }, 'Enregistrer')));
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const { current, next, confirm: conf } = form.elements;
+    const fail = (m) => { err.textContent = m; err.hidden = false; };
+    if (next.value !== conf.value) return fail('Les deux mots de passe ne correspondent pas.');
+    try {
+      await api.req('POST', '/api/password', { current: current.value, next: next.value });
+      close();
+      toast('Mot de passe modifié. Les autres appareils ont été déconnectés.');
+    } catch (ex) { fail(ex.message); }
+  });
+  const close = openModal(h('div', {}, h('h3', { class: 'modal-title' }, '🔑 Changer le mot de passe'), form), { className: 'pw-modal' });
+  form.elements.current.focus();
+}
+
 async function init() {
   setupChrome();
   setupFormatBar();
   if (innerWidth < 800) document.body.classList.add('sb-hidden');
   try {
-    state.pages = await api.list();
+    [state.pages, state.me] = await Promise.all([api.list(), api.req('GET', '/api/me')]);
+    $('#sb-username').textContent = state.me.username;
     setStatus('saved');
   } catch (e) {
     $('#page').replaceChildren(h('div', { class: 'empty-state' }, h('p', {}, `Impossible de joindre le serveur : ${e.message}`)));

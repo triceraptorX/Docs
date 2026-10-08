@@ -6,10 +6,7 @@
   <title>Notes</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
   <link rel="stylesheet" href="/style.css">
-  <script>
-    // Applique le thème avant le rendu pour éviter un flash
-    try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-  </script>
+  <script src="/theme.js"></script>
 </head>
 <body>
   <aside id="sidebar">
@@ -24,6 +21,7 @@
     <div class="sb-footer">
       <button class="sb-item" id="sb-trash"><span class="sb-ico">🗑️</span> Corbeille</button>
       <button class="sb-item" id="sb-theme"><span class="sb-ico">🌓</span> Thème clair / sombre</button>
+      <button class="sb-item" id="sb-account"><span class="sb-ico">👤</span> <span id="sb-username">Compte</span></button>
     </div>
   </aside>
   <div id="sb-backdrop"></div>

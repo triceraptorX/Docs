@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion · Notes</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/theme.js"></script>
+</head>
+<body class="login-body">
+  <main class="login-card">
+    <div class="login-logo">📝</div>
+    <h1>Mes notes</h1>
+    <p class="muted">Connecte-toi pour accéder à ton espace.</p>
+    <form id="login-form" autocomplete="on">
+      <label>Identifiant
+        <input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
+      </label>
+      <label>Mot de passe
+        <input name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <p id="login-error" class="login-error" role="alert" hidden></p>
+      <button class="btn primary" type="submit">Se connecter</button>
+    </form>
+  </main>
+  <script src="/login.js"></script>
+</body>
+</html>
